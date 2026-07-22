@@ -1,4 +1,4 @@
-export type TransmissionType = 'Automático' | 'Manual';
+export type TransmissionType = 'Automático' | 'Manual' | 'CVT';
 export type FuelType = 'Flex' | 'Gasolina' | 'Diesel' | 'Híbrido' | 'Elétrico';
 export type CarStatus = 'Disponível' | 'Vendido' | 'Reservado';
 
@@ -8,7 +8,7 @@ export interface Car {
   model: string;
   version: string;
   yearModel: string;
-  mileage: number;
+  mileage?: number;
   price: number;
   fuel: FuelType;
   transmission: TransmissionType;
@@ -17,6 +17,7 @@ export interface Car {
   photos: string[];
   shopcarUrl?: string;
   features: string[];
+  description?: string;
   featured: boolean;
   status: CarStatus;
   createdAt: string;

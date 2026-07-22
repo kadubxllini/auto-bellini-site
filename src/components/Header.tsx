@@ -1,12 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { useCars } from '../context/CarContext';
+import { AdminHeaderBar } from './admin/AdminHeaderBar';
 
 export const Header: React.FC = () => {
+  const { setSelectedCar } = useCars();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [whatsappDropdownOpen, setWhatsappDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleNavClick = (section: string) => {
+    setActiveSection(section);
+    setSelectedCar(null);
+    setMobileMenuOpen(false);
+    if (section === 'home') {
+      if (window.location.pathname !== '/' && window.location.pathname !== '') {
+        window.history.pushState(null, '', '/');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -21,23 +36,33 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 shadow-2xl text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-between gap-4">
+      {/* Linha Superior da Header (Centralizada) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-center gap-6 sm:gap-8 lg:gap-10">
         
-        {/* Left Group: Logo & Navigation Menu closer together */}
-        <div className="flex items-center gap-6 lg:gap-8">
-          <a href="#home" className="flex items-center group py-1 flex-shrink-0">
-            <img 
-              src="/logo.png" 
-              alt="Auto Bellini Logo" 
-              className="h-14 sm:h-16 md:h-18 w-auto object-contain drop-shadow-[0_4px_14px_rgba(220,38,38,0.4)] group-hover:scale-105 transition-transform duration-300"
-            />
-          </a>
+        {/* Logo */}
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavClick('home');
+          }}
+          className="flex items-center group py-1 flex-shrink-0"
+        >
+          <img 
+            src="/logo.png" 
+            alt="Auto Bellini Logo" 
+            className="h-14 sm:h-16 md:h-18 w-auto object-contain drop-shadow-[0_4px_14px_rgba(220,38,38,0.4)] group-hover:scale-105 transition-transform duration-300"
+          />
+        </a>
 
-          {/* Expanded Navigation Items */}
-          <nav className="hidden lg:flex items-center space-x-6 lg:space-x-8 font-heading font-black text-sm lg:text-base tracking-wider uppercase">
+        {/* Menu de Navegação Centralizado */}
+        <nav className="hidden lg:flex items-center space-x-6 lg:space-x-8 font-heading font-black text-sm lg:text-base tracking-wider uppercase">
           <a 
-            href="#home" 
-            onClick={() => setActiveSection('home')}
+            href="/" 
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('home');
+            }}
             className={`transition-colors duration-200 py-2 relative hover:text-red-500 ${
               activeSection === 'home' ? 'text-red-500 after:w-full' : 'text-slate-100'
             } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all hover:after:w-full`}
@@ -47,7 +72,7 @@ export const Header: React.FC = () => {
 
           <a 
             href="#sobre" 
-            onClick={() => setActiveSection('sobre')}
+            onClick={() => handleNavClick('sobre')}
             className={`transition-colors duration-200 py-2 relative hover:text-red-500 ${
               activeSection === 'sobre' ? 'text-red-500 after:w-full' : 'text-slate-100'
             } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all hover:after:w-full`}
@@ -57,7 +82,7 @@ export const Header: React.FC = () => {
 
           <a 
             href="#estoque" 
-            onClick={() => setActiveSection('estoque')}
+            onClick={() => handleNavClick('estoque')}
             className={`transition-colors duration-200 py-2 relative hover:text-red-500 ${
               activeSection === 'estoque' ? 'text-red-500 after:w-full' : 'text-slate-100'
             } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all hover:after:w-full`}
@@ -67,7 +92,7 @@ export const Header: React.FC = () => {
 
           <a 
             href="#missao" 
-            onClick={() => setActiveSection('missao')}
+            onClick={() => handleNavClick('missao')}
             className={`transition-colors duration-200 py-2 relative hover:text-red-500 ${
               activeSection === 'missao' ? 'text-red-500 after:w-full' : 'text-slate-100'
             } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all hover:after:w-full`}
@@ -77,7 +102,7 @@ export const Header: React.FC = () => {
 
           <a 
             href="#contato" 
-            onClick={() => setActiveSection('contato')}
+            onClick={() => handleNavClick('contato')}
             className={`transition-colors duration-200 py-2 relative hover:text-red-500 ${
               activeSection === 'contato' ? 'text-red-500 after:w-full' : 'text-slate-100'
             } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all hover:after:w-full`}
@@ -85,12 +110,11 @@ export const Header: React.FC = () => {
             CONTATO
           </a>
         </nav>
-        </div>
 
-        {/* Right: Social Media Buttons (Facebook, Instagram, WhatsApp Dropdown) */}
-        <div className="flex items-center space-x-3">
+        {/* Botões de Redes Sociais */}
+        <div className="hidden sm:flex items-center space-x-3 flex-shrink-0">
           
-          {/* Facebook Icon */}
+          {/* Facebook */}
           <a
             href="https://www.facebook.com/autobellini.veiculos/"
             target="_blank"
@@ -103,7 +127,7 @@ export const Header: React.FC = () => {
             </svg>
           </a>
 
-          {/* Instagram Icon */}
+          {/* Instagram */}
           <a
             href="https://www.instagram.com/autobelliniveiculos"
             target="_blank"
@@ -116,19 +140,18 @@ export const Header: React.FC = () => {
             </svg>
           </a>
 
-          {/* Official WhatsApp Dropdown Menu (Handles Both WhatsApp 1 and 2) */}
+          {/* WhatsApp Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setWhatsappDropdownOpen(!whatsappDropdownOpen)}
               onMouseEnter={() => setWhatsappDropdownOpen(true)}
-              title="Atendimento no WhatsApp (2 números disponíveis)"
+              title="Atendimento no WhatsApp"
               className="p-2.5 bg-slate-900 hover:bg-emerald-600 text-emerald-500 hover:text-white rounded-xl border border-slate-800 transition-all transform hover:scale-105 shadow-md flex items-center gap-1"
             >
               <WhatsAppIcon className="w-5 h-5 fill-current" />
               <ChevronDown className="w-3.5 h-3.5 opacity-70" />
             </button>
 
-            {/* Dropdown Popover */}
             {whatsappDropdownOpen && (
               <div 
                 className="absolute right-0 mt-2 w-60 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-slide-in text-xs font-semibold"
@@ -168,27 +191,27 @@ export const Header: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Mobile Hamburger */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-slate-300 hover:text-white"
-            aria-label="Abrir menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-2 text-slate-300 hover:text-white absolute right-4"
+          aria-label="Abrir menu"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
 
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-slate-950 border-t border-slate-800 px-6 pt-4 pb-6 space-y-4 font-heading font-black tracking-wider uppercase text-sm">
-          <a href="#home" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-red-500 hover:text-red-400">PÁGINA INICIAL</a>
-          <a href="#sobre" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-200 hover:text-red-500">A LOJA</a>
-          <a href="#estoque" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-200 hover:text-red-500">NOSSO ESTOQUE</a>
-          <a href="#missao" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-200 hover:text-red-500">MISSÃO & VALORES</a>
-          <a href="#contato" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-slate-200 hover:text-red-500">CONTATO</a>
+          <a href="#home" onClick={() => handleNavClick('home')} className="block py-2 text-red-500 hover:text-red-400">PÁGINA INICIAL</a>
+          <a href="#sobre" onClick={() => handleNavClick('sobre')} className="block py-2 text-slate-200 hover:text-red-500">A LOJA</a>
+          <a href="#estoque" onClick={() => handleNavClick('estoque')} className="block py-2 text-slate-200 hover:text-red-500">NOSSO ESTOQUE</a>
+          <a href="#missao" onClick={() => handleNavClick('missao')} className="block py-2 text-slate-200 hover:text-red-500">MISSÃO & VALORES</a>
+          <a href="#contato" onClick={() => handleNavClick('contato')} className="block py-2 text-slate-200 hover:text-red-500">CONTATO</a>
           
           <div className="pt-2 border-t border-slate-800 space-y-2">
             <span className="block text-[11px] text-slate-400 font-bold uppercase">WhatsApp dos Consultores:</span>
@@ -213,6 +236,9 @@ export const Header: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Header do Administrador Grudada Logo Abaixo quando Ativa */}
+      <AdminHeaderBar />
     </header>
   );
 };

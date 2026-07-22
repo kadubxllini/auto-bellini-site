@@ -58,11 +58,20 @@ const defaultFilterState: FilterState = {
 
 const CarContext = createContext<CarContextType | undefined>(undefined);
 
+export const getCarSlug = (car: Car): string => {
+  const text = (car.version || car.model || '').trim();
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cars, setCars] = useState<Car[]>([]);
   const [filters, setFilters] = useState<FilterState>(defaultFilterState);
-  
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [selectedCar, setSelectedCarState] = useState<Car | null>(null);
   const [financingCar, setFinancingCar] = useState<Car | null>(null);
   
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -72,28 +81,75 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   
   const [toasts, setToasts] = useState<ToastInfo[]>([]);
 
+  // Sincronização de Rota da URL para cada veículo (ex: /nivus-comfortline-1-0-12v-tsi/1623368)
+  const handleSelectCar = (car: Car | null) => {
+    setSelectedCarState(car);
+    if (car) {
+      const slug = getCarSlug(car);
+      const targetUrl = `/${slug}/${car.id}`;
+      if (window.location.pathname !== targetUrl) {
+        window.history.pushState(null, '', targetUrl);
+      }
+    } else {
+      if (window.location.pathname !== '/' && window.location.pathname !== '') {
+        window.history.pushState(null, '', '/');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   useEffect(() => {
     const loaded = carService.getCars();
     setCars(loaded);
     setIsAdmin(authService.isAuthenticated());
 
-    const checkAdminRoute = () => {
+    const checkRouteAndHash = () => {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
+
+      // Rota ADM
       if (path === '/admin' || path === '/admin/' || hash === '#admin' || hash === '#/admin') {
         if (!authService.isAuthenticated()) {
           setIsLoginModalOpen(true);
         }
       }
+
+      // Rota de Veículo Específico (ex: /nivus-comfortline-1-0-12v-tsi/1623368)
+      const targetString = (path !== '/' && path !== '') ? path : hash;
+      if (targetString && targetString !== '#' && targetString !== '/') {
+        const parts = targetString.replace('#', '').split('/').filter(Boolean);
+        const possibleId = parts[parts.length - 1]; // O ID é a última parte da URL
+
+        if (possibleId) {
+          const matchedCar = loaded.find(c => {
+            const slug = getCarSlug(c);
+            return (
+              c.id === possibleId || 
+              targetString.endsWith(`/${c.id}`) ||
+              targetString.includes(`/${slug}/${c.id}`)
+            );
+          });
+
+          if (matchedCar) {
+            setSelectedCarState(matchedCar);
+          } else {
+            setSelectedCarState(null);
+          }
+        } else {
+          setSelectedCarState(null);
+        }
+      } else {
+        setSelectedCarState(null);
+      }
     };
 
-    checkAdminRoute();
-    window.addEventListener('popstate', checkAdminRoute);
-    window.addEventListener('hashchange', checkAdminRoute);
+    checkRouteAndHash();
+    window.addEventListener('popstate', checkRouteAndHash);
+    window.addEventListener('hashchange', checkRouteAndHash);
 
     return () => {
-      window.removeEventListener('popstate', checkAdminRoute);
-      window.removeEventListener('hashchange', checkAdminRoute);
+      window.removeEventListener('popstate', checkRouteAndHash);
+      window.removeEventListener('hashchange', checkRouteAndHash);
     };
   }, []);
 
@@ -143,7 +199,7 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       resetFilters,
       brands,
       selectedCar,
-      setSelectedCar,
+      setSelectedCar: handleSelectCar,
       financingCar,
       setFinancingCar,
       isAdmin,

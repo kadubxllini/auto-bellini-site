@@ -8,16 +8,16 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-950 text-white border-t-4 border-red-600 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-slate-800">
-          
+
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <img 
-                src="/logo.png" 
-                alt="Auto Bellini Veículos Logo" 
-                className="h-20 sm:h-24 w-auto object-contain bg-white p-3 rounded-2xl shadow-lg border border-slate-200" 
+              <img
+                src="/logo.png"
+                alt="Auto Bellini Veículos Logo"
+                className="h-20 sm:h-24 w-auto object-contain bg-white p-3 rounded-2xl shadow-lg border border-slate-200"
               />
               <div>
                 <div className="font-brand font-black text-2xl tracking-tight leading-none">
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
               </div>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm pt-2">
-              <AutoBelliniText /> Veículos — Loja de carros seminovos e usados com garantia de procedência em Campo Grande - MS (Av. Bandeirantes, 2052).
+              <AutoBelliniText /> Veículos - Loja de carros seminovos e usados com garantia de procedência em Campo Grande - MS (Av. Bandeirantes, 2052).
             </p>
           </div>
 

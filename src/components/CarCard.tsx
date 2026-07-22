@@ -11,8 +11,13 @@ interface CarCardProps {
 export const CarCard: React.FC<CarCardProps> = ({ car }) => {
   const { setSelectedCar, setFinancingCar, isAdmin, setEditingCar, setIsCarModalOpen, deleteCar } = useCars();
 
-  const formattedPrice = car.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  const formattedKm = car.mileage.toLocaleString('pt-BR');
+  const priceNum = Number(car.price);
+  const formattedPrice = !isNaN(priceNum) && priceNum > 0
+    ? priceNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    : 'Sob Consulta';
+
+  const hasMileage = car.mileage !== undefined && car.mileage !== null && typeof car.mileage === 'number' && !isNaN(car.mileage);
+  const formattedKm = hasMileage ? `${car.mileage!.toLocaleString('pt-BR')} km` : '';
   const shopcarTarget = car.shopcarUrl && car.shopcarUrl.trim() !== '' ? car.shopcarUrl : DEFAULT_SHOPCAR_URL;
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -38,11 +43,11 @@ export const CarCard: React.FC<CarCardProps> = ({ car }) => {
       onClick={() => setSelectedCar(car)}
       className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all duration-300 flex flex-col overflow-hidden cursor-pointer relative"
     >
-      {/* Image & Badges */}
-      <div className="relative w-full h-56 bg-slate-900 overflow-hidden">
+      {/* Image & Badges (Proporção Padrão 1024x768 / 4:3 Sem Bordas) */}
+      <div className="relative w-full aspect-[4/3] bg-slate-900 overflow-hidden">
         <img 
-          src={car.photos[0] || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop'} 
-          alt={`${car.brand} ${car.model}`}
+          src={(Array.isArray(car.photos) && car.photos.length > 0 && car.photos[0]) ? car.photos[0] : 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop'} 
+          alt={`${car.brand || ''} ${car.model || ''}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop';
@@ -91,24 +96,22 @@ export const CarCard: React.FC<CarCardProps> = ({ car }) => {
             {car.brand}
           </div>
 
-          <h3 className="font-extrabold text-lg text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1">
-            {car.model}
+          <h3 className="font-extrabold text-base text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-2 mb-4 min-h-[3rem]">
+            {car.version}
           </h3>
 
-          <p className="text-xs text-slate-500 font-medium line-clamp-1 mb-4">
-            {car.version}
-          </p>
-
           {/* Key Specs */}
-          <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-xs font-semibold text-slate-600 mb-4">
+          <div className={`grid ${hasMileage ? 'grid-cols-3' : 'grid-cols-2'} gap-2 py-3 border-y border-slate-100 text-xs font-semibold text-slate-600 mb-4`}>
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
               <span>{car.yearModel}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Gauge className="w-3.5 h-3.5 text-slate-400" />
-              <span>{formattedKm} km</span>
-            </div>
+            {hasMileage && (
+              <div className="flex items-center gap-1.5">
+                <Gauge className="w-3.5 h-3.5 text-slate-400" />
+                <span>{formattedKm}</span>
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
               <Fuel className="w-3.5 h-3.5 text-slate-400" />
               <span>{car.fuel}</span>
@@ -129,7 +132,7 @@ export const CarCard: React.FC<CarCardProps> = ({ car }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#b01717] hover:bg-[#8f1212] text-white font-bold text-xs rounded-xl transition-all shadow-sm active:scale-[0.98]"
             >
               <span>Ver no Shopcar</span>
               <ChevronRight className="w-4 h-4" />

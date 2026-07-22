@@ -26,7 +26,7 @@ export const AdminLoginModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
-        
+
         {/* Header */}
         <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-red-600">
           <div className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export const AdminLoginModal: React.FC = () => {
           <div className="text-center pb-2">
             <img src="/logo.png" alt="Auto Bellini" className="h-20 w-auto object-contain mx-auto mb-2" />
             <p className="text-xs font-semibold text-slate-600">
-              Painel de Gestão de Anúncios — Auto Bellini Veículos
+              Painel de Gestão de Anúncios - Auto Bellini Veículos
             </p>
           </div>
 

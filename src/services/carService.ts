@@ -1,7 +1,7 @@
 import type { Car, FilterState } from '../types/car';
 import { SEED_CARS } from '../data/seedCars';
 
-const STORAGE_KEY = 'auto_bellini_cars_prod_v1';
+const STORAGE_KEY = 'auto_bellini_cars_v4';
 export const DEFAULT_SHOPCAR_URL = 'https://www.shopcar.com.br/loja.php?loja=788';
 
 export const carService = {
@@ -25,12 +25,13 @@ export const carService = {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cars));
   },
 
-  // Adicionar carro
+  // Adicionar carro com ID estritamente numérico
   addCar(carData: Omit<Car, 'id' | 'createdAt'>): Car {
     const cars = this.getCars();
+    const numericId = String(Date.now() + Math.floor(Math.random() * 1000));
     const newCar: Car = {
       ...carData,
-      id: `car-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      id: numericId,
       createdAt: new Date().toISOString()
     };
     const updated = [newCar, ...cars];

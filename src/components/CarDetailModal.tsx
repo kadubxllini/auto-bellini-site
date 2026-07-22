@@ -10,10 +10,15 @@ export const CarDetailModal: React.FC = () => {
 
   if (!selectedCar) return null;
 
-  const formattedPrice = selectedCar.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  const formattedKm = selectedCar.mileage.toLocaleString('pt-BR');
+  const priceNum = Number(selectedCar.price);
+  const formattedPrice = !isNaN(priceNum) && priceNum > 0
+    ? priceNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+    : 'Sob Consulta';
+
+  const hasMileage = selectedCar.mileage !== undefined && selectedCar.mileage !== null && typeof selectedCar.mileage === 'number' && !isNaN(selectedCar.mileage);
+  const formattedKm = hasMileage ? `${selectedCar.mileage!.toLocaleString('pt-BR')} km` : '';
   const shopcarTarget = selectedCar.shopcarUrl && selectedCar.shopcarUrl.trim() !== '' ? selectedCar.shopcarUrl : DEFAULT_SHOPCAR_URL;
-  const photos = selectedCar.photos && selectedCar.photos.length > 0 ? selectedCar.photos : ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop'];
+  const photos = Array.isArray(selectedCar.photos) && selectedCar.photos.length > 0 ? selectedCar.photos : ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop'];
 
   const handleNextPhoto = () => {
     setActivePhotoIndex((prev) => (prev + 1) % photos.length);
@@ -145,18 +150,33 @@ export const CarDetailModal: React.FC = () => {
               </div>
             </div>
 
-            {/* Features */}
+            {/* Features (Opcionais no estilo Shopcar) */}
             {selectedCar.features && selectedCar.features.length > 0 && (
-              <div>
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Opcionais & Destaques</h4>
-                <div className="flex flex-wrap gap-1.5 mb-6">
+              <div className="mb-4">
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-600"></span>
+                  Opcionais do Veículo ({selectedCar.features.length})
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-[11px] text-slate-700 max-h-36 overflow-y-auto">
                   {selectedCar.features.map((feat: string, i: number) => (
-                    <span key={i} className="inline-flex items-center gap-1 text-[11px] font-medium bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md">
-                      <Check className="w-3 h-3 text-emerald-600" />
-                      {feat}
-                    </span>
+                    <div key={i} className="flex items-center gap-1.5 py-0.5">
+                      <span className="text-red-600 font-black text-xs">•</span>
+                      <span className="font-medium text-slate-800">{feat}</span>
+                    </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Observações do Anunciante */}
+            {selectedCar.description && (
+              <div className="mb-4 p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+                <h4 className="text-[11px] font-black text-amber-900 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  Observações do Anunciante
+                </h4>
+                <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  {selectedCar.description}
+                </p>
               </div>
             )}
           </div>
