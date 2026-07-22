@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCars } from '../../context/CarContext';
-import { ShieldCheck, Plus, LogOut } from 'lucide-react';
+import { ShieldCheck, Plus, LogOut, Key } from 'lucide-react';
 import { authService } from '../../services/authService';
 
 export const AdminHeaderBar: React.FC = () => {
@@ -11,6 +11,14 @@ export const AdminHeaderBar: React.FC = () => {
   const handleAddNew = () => {
     setEditingCar(null);
     setIsCarModalOpen(true);
+  };
+
+  const handleChangePassword = () => {
+    const newPass = prompt('Digite a nova senha de Administrador:');
+    if (newPass && newPass.trim().length > 0) {
+      authService.setAdminPassword(newPass.trim());
+      showToast('Senha de Administrador alterada com sucesso!', 'success');
+    }
   };
 
   const handleLogout = () => {
@@ -37,6 +45,15 @@ export const AdminHeaderBar: React.FC = () => {
           </button>
 
           <button
+            onClick={handleChangePassword}
+            className="flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition-colors"
+            title="Alterar Senha do Administrador"
+          >
+            <Key className="w-3.5 h-3.5" />
+            <span>Alterar Senha</span>
+          </button>
+
+          <button
             onClick={handleLogout}
             className="flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition-colors"
           >
@@ -48,3 +65,4 @@ export const AdminHeaderBar: React.FC = () => {
     </div>
   );
 };
+

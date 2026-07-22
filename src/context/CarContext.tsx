@@ -76,6 +76,25 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const loaded = carService.getCars();
     setCars(loaded);
     setIsAdmin(authService.isAuthenticated());
+
+    const checkAdminRoute = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/admin' || path === '/admin/' || hash === '#admin' || hash === '#/admin') {
+        if (!authService.isAuthenticated()) {
+          setIsLoginModalOpen(true);
+        }
+      }
+    };
+
+    checkAdminRoute();
+    window.addEventListener('popstate', checkAdminRoute);
+    window.addEventListener('hashchange', checkAdminRoute);
+
+    return () => {
+      window.removeEventListener('popstate', checkAdminRoute);
+      window.removeEventListener('hashchange', checkAdminRoute);
+    };
   }, []);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {

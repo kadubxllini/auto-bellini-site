@@ -61,11 +61,10 @@ export const AdminLoginModal: React.FC = () => {
                 setPassword(e.target.value);
                 setError(false);
               }}
-              placeholder="Digite a senha (padrão: admin123)"
+              placeholder="Digite a senha de administrador"
               autoFocus
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
             />
-            <span className="block text-[11px] text-slate-400 mt-1">Dica: A senha padrão é <strong>admin123</strong></span>
           </div>
 
           {error && (

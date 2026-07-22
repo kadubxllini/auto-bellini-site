@@ -5,13 +5,13 @@ import { AutoBelliniText } from './AutoBelliniText';
 
 export const Hero: React.FC = () => {
   return (
-    <section id="home" className="relative bg-slate-950 text-white overflow-hidden py-24 lg:py-32">
+    <section id="home" className="relative bg-slate-950 text-white overflow-hidden pt-12 sm:pt-16 pb-20 lg:pb-24">
       {/* Background Image Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity scale-105 transform transition-transform duration-10000 hover:scale-100"
-        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1920&auto=format&fit=crop')` }}
+        className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity scale-105 transform transition-transform duration-10000 hover:scale-100"
+        style={{ backgroundImage: `url('/hero-bg.jpg')` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-blue-950/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/75" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">

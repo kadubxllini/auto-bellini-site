@@ -12,10 +12,10 @@ export const AutoBelliniText: React.FC<AutoBelliniTextProps> = ({
 }) => {
   return (
     <span className={`font-brand inline-flex items-baseline tracking-tight font-black ${className}`}>
-      <span className="text-red-600 drop-shadow-[0_2px_4px_rgba(220,38,38,0.2)]">
+      <span className="text-[#b10924] drop-shadow-[0_2px_4px_rgba(177,9,36,0.3)]">
         {uppercase ? 'AUTO' : 'Auto'}
       </span>
-      <span className="text-blue-500 ml-[0.15em] drop-shadow-[0_2px_4px_rgba(59,130,246,0.2)]">
+      <span className="text-[#042165] ml-[0.15em] drop-shadow-[0_2px_4px_rgba(4,33,101,0.3)]">
         {uppercase ? 'BELLINI' : 'Bellini'}
       </span>
     </span>

@@ -12,9 +12,9 @@ export const AboutSection: React.FC = () => {
           <div className="relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100">
               <img
-                src="https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=1200&auto=format&fit=crop"
+                src="/hero-bg.jpg"
                 alt="Fachada Auto Bellini Veículos em Campo Grande MS"
-                className="w-full h-[480px] object-cover"
+                className="w-full h-[480px] object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
               

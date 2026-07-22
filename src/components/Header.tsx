@@ -21,19 +21,20 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 shadow-2xl text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 flex items-center justify-between gap-4">
         
-        {/* Left: ONLY Logo Image */}
-        <a href="#home" className="flex items-center group py-1">
-          <img 
-            src="/logo.png" 
-            alt="Auto Bellini Logo" 
-            className="h-16 sm:h-18 md:h-20 w-auto object-contain drop-shadow-[0_4px_14px_rgba(220,38,38,0.4)] group-hover:scale-105 transition-transform duration-300"
-          />
-        </a>
+        {/* Left Group: Logo & Navigation Menu closer together */}
+        <div className="flex items-center gap-6 lg:gap-8">
+          <a href="#home" className="flex items-center group py-1 flex-shrink-0">
+            <img 
+              src="/logo.png" 
+              alt="Auto Bellini Logo" 
+              className="h-14 sm:h-16 md:h-18 w-auto object-contain drop-shadow-[0_4px_14px_rgba(220,38,38,0.4)] group-hover:scale-105 transition-transform duration-300"
+            />
+          </a>
 
-        {/* Center: Expanded Larger Navigation Items */}
-        <nav className="hidden lg:flex items-center space-x-8 lg:space-x-10 font-heading font-black text-sm lg:text-base tracking-wider uppercase">
+          {/* Expanded Navigation Items */}
+          <nav className="hidden lg:flex items-center space-x-6 lg:space-x-8 font-heading font-black text-sm lg:text-base tracking-wider uppercase">
           <a 
             href="#home" 
             onClick={() => setActiveSection('home')}
@@ -84,6 +85,7 @@ export const Header: React.FC = () => {
             CONTATO
           </a>
         </nav>
+        </div>
 
         {/* Right: Social Media Buttons (Facebook, Instagram, WhatsApp Dropdown) */}
         <div className="flex items-center space-x-3">

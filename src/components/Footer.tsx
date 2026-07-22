@@ -1,24 +1,10 @@
 import React from 'react';
-import { ExternalLink, Lock, ShieldCheck, Phone } from 'lucide-react';
+import { ExternalLink, Phone } from 'lucide-react';
 import { DEFAULT_SHOPCAR_URL } from '../services/carService';
 import { AutoBelliniText } from './AutoBelliniText';
-import { useCars } from '../context/CarContext';
-import { authService } from '../services/authService';
 import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Footer: React.FC = () => {
-  const { isAdmin, setIsAdmin, setIsLoginModalOpen, showToast } = useCars();
-
-  const handleAdminClick = () => {
-    if (isAdmin) {
-      authService.logout();
-      setIsAdmin(false);
-      showToast('Você encerrou a sessão do modo ADM.');
-    } else {
-      setIsLoginModalOpen(true);
-    }
-  };
-
   return (
     <footer className="bg-slate-950 text-white border-t-4 border-red-600 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,8 +21,8 @@ export const Footer: React.FC = () => {
               />
               <div>
                 <div className="font-brand font-black text-2xl tracking-tight leading-none">
-                  <span className="text-red-600 uppercase">AUTO</span>
-                  <span className="text-blue-500 uppercase ml-1">BELLINI</span>
+                  <span className="text-[#b10924] uppercase">AUTO</span>
+                  <span className="text-[#042165] uppercase ml-1">BELLINI</span>
                 </div>
                 <span className="font-brand text-[10px] tracking-[3px] text-slate-400 font-bold uppercase mt-1 block">
                   VEÍCULOS
@@ -93,22 +79,13 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom Bar with Discreet ADM Toggle Button */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        {/* Bottom Bar */}
+        <div className="pt-8 text-center text-xs text-slate-500">
           <p>&copy; 2026 Auto Bellini Veículos. Todos os direitos reservados. | Av. Bandeirantes, 2052 - Campo Grande - MS</p>
-          
-          {/* Discreet ADM Access Button in Footer as requested */}
-          <button
-            onClick={handleAdminClick}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg border border-slate-800 text-[11px] font-semibold transition-all"
-            title="Acesso Restrito da Administração"
-          >
-            {isAdmin ? <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> : <Lock className="w-3.5 h-3.5 text-slate-500" />}
-            <span>{isAdmin ? 'Sair do Modo ADM' : 'Acesso ADM (Restrito)'}</span>
-          </button>
         </div>
 
       </div>
     </footer>
   );
 };
+
