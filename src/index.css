@@ -1,0 +1,31 @@
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ============================================
+   Fonte Oficial da Marca: Ethnocentric Bold
+   Self-hosted para garantir carregamento local
+   ============================================ */
+@font-face {
+  font-family: 'Ethnocentric';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/ethnocentric-rg.woff') format('woff');
+}
+
+.font-brand-logo {
+  font-family: 'Ethnocentric', 'Orbitron', sans-serif;
+  letter-spacing: 0.03em;
+}

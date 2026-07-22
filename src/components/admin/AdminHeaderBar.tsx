@@ -1,0 +1,50 @@
+import React from 'react';
+import { useCars } from '../../context/CarContext';
+import { ShieldCheck, Plus, LogOut } from 'lucide-react';
+import { authService } from '../../services/authService';
+
+export const AdminHeaderBar: React.FC = () => {
+  const { isAdmin, setIsAdmin, setIsCarModalOpen, setEditingCar, showToast } = useCars();
+
+  if (!isAdmin) return null;
+
+  const handleAddNew = () => {
+    setEditingCar(null);
+    setIsCarModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setIsAdmin(false);
+    showToast('Você saiu do modo Administrador.');
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-red-900 text-white py-2.5 px-4 shadow-md sticky top-20 z-30 border-b border-red-500/50">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-semibold">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span>Modo Administrador Ativo — Gerenciamento de Anúncios de Carros</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleAddNew}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Novo Carro</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-700 transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sair do ADM</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
