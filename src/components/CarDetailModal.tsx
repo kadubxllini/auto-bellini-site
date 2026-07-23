@@ -120,7 +120,7 @@ export const CarDetailModal: React.FC = () => {
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-slate-400" />
                 <div>
-                  <span className="block text-[10px] text-slate-400 font-bold uppercase">Ano/Modelo</span>
+                  <span className="block text-[10px] text-slate-400 font-bold uppercase">Ano</span>
                   <span>{selectedCar.yearModel}</span>
                 </div>
               </div>

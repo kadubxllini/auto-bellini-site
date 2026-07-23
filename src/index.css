@@ -13,6 +13,21 @@
   animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes smoothFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-smooth-fade {
+  animation: smoothFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* ============================================
    Fonte Oficial da Marca: Ethnocentric Bold
    Self-hosted para garantir carregamento local
@@ -28,4 +43,13 @@
 .font-brand-logo {
   font-family: 'Ethnocentric', 'Orbitron', sans-serif;
   letter-spacing: 0.03em;
+}
+
+/* Ocultar barra de rolagem no carrossel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

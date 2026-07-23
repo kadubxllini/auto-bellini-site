@@ -17,6 +17,8 @@ interface CarContextType {
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   resetFilters: () => void;
   brands: string[];
+  versions: string[];
+  colors: string[];
   
   // Selected Car Modal
   selectedCar: Car | null;
@@ -40,6 +42,7 @@ interface CarContextType {
   addCar: (car: Omit<Car, 'id' | 'createdAt'>) => void;
   updateCar: (id: string, car: Partial<Car>) => void;
   deleteCar: (id: string) => void;
+  reorderCars: (newCars: Car[]) => void;
 
   // Toast
   toasts: ToastInfo[];
@@ -49,10 +52,17 @@ interface CarContextType {
 const defaultFilterState: FilterState = {
   searchQuery: '',
   brand: '',
+  version: '',
+  color: '',
   transmission: '',
   fuel: '',
-  minPrice: 0,
-  maxPrice: 0,
+  bodyType: '',
+  minPrice: '',
+  maxPrice: '',
+  minYear: '',
+  maxYear: '',
+  minKm: '',
+  maxKm: '',
   sortBy: 'recent'
 };
 
@@ -81,20 +91,30 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   
   const [toasts, setToasts] = useState<ToastInfo[]>([]);
 
-  // Sincronização de Rota da URL para cada veículo (ex: /nivus-comfortline-1-0-12v-tsi/1623368)
+  const scrollPosRef = React.useRef<number>(0);
+
+  // Sincronização de Rota da URL para cada veículo com restauração de Scroll
   const handleSelectCar = (car: Car | null) => {
-    setSelectedCarState(car);
     if (car) {
+      if (!selectedCar) {
+        scrollPosRef.current = window.scrollY;
+      }
+      setSelectedCarState(car);
       const slug = getCarSlug(car);
       const targetUrl = `/${slug}/${car.id}`;
       if (window.location.pathname !== targetUrl) {
-        window.history.pushState(null, '', targetUrl);
+        window.history.pushState({ carId: car.id }, '', targetUrl);
       }
+      window.scrollTo({ top: 0, behavior: 'instant' });
     } else {
+      setSelectedCarState(null);
       if (window.location.pathname !== '/' && window.location.pathname !== '') {
         window.history.pushState(null, '', '/');
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const savedPos = scrollPosRef.current;
+      setTimeout(() => {
+        window.scrollTo({ top: savedPos, behavior: 'instant' });
+      }, 20);
     }
   };
 
@@ -109,6 +129,7 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // Rota ADM
       if (path === '/admin' || path === '/admin/' || hash === '#admin' || hash === '#/admin') {
+        window.scrollTo({ top: 0, behavior: 'instant' });
         if (!authService.isAuthenticated()) {
           setIsLoginModalOpen(true);
         }
@@ -131,7 +152,12 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           });
 
           if (matchedCar) {
-            setSelectedCarState(matchedCar);
+            setSelectedCarState(prev => {
+              if (!prev) {
+                scrollPosRef.current = window.scrollY;
+              }
+              return matchedCar;
+            });
           } else {
             setSelectedCarState(null);
           }
@@ -139,7 +165,15 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           setSelectedCarState(null);
         }
       } else {
-        setSelectedCarState(null);
+        setSelectedCarState(prev => {
+          if (prev) {
+            const savedPos = scrollPosRef.current;
+            setTimeout(() => {
+              window.scrollTo({ top: savedPos, behavior: 'instant' });
+            }, 20);
+          }
+          return null;
+        });
       }
     };
 
@@ -183,12 +217,20 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const reorderCars = (newCars: Car[]) => {
+    carService.reorderCars(newCars);
+    setCars(newCars);
+    showToast(`Ordem dos veículos atualizada!`, 'success');
+  };
+
   const resetFilters = () => {
     setFilters(defaultFilterState);
   };
 
   const filteredCars = carService.filterCars(cars, filters);
   const brands = carService.getUniqueBrands(cars);
+  const versions = carService.getUniqueVersions(cars);
+  const colors = carService.getUniqueColors(cars);
 
   return (
     <CarContext.Provider value={{
@@ -198,6 +240,8 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setFilters,
       resetFilters,
       brands,
+      versions,
+      colors,
       selectedCar,
       setSelectedCar: handleSelectCar,
       financingCar,
@@ -213,6 +257,7 @@ export const CarProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       addCar,
       updateCar,
       deleteCar,
+      reorderCars,
       toasts,
       showToast
     }}>

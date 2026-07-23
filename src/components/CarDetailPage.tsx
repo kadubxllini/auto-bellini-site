@@ -195,7 +195,7 @@ export const CarDetailPage: React.FC = () => {
               {/* Barra de Especificações (Ano/Modelo, Cor, Combustível, KM opcional) */}
               <div className={`grid grid-cols-2 ${hasMileage ? 'sm:grid-cols-4' : 'sm:grid-cols-3'} gap-4 mt-6 pt-6 border-t border-slate-100 text-center`}>
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                  <span className="block text-[11px] font-bold text-slate-400 uppercase mb-0.5">Ano/Modelo</span>
+                  <span className="block text-[11px] font-bold text-slate-400 uppercase mb-0.5">Ano</span>
                   <span className="text-base font-black text-slate-900">{selectedCar.yearModel}</span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">

@@ -1,18 +1,13 @@
 import React from 'react';
 import { useCars } from '../context/CarContext';
 import { CarCard } from './CarCard';
-import { Car, Plus } from 'lucide-react';
+import { Car } from 'lucide-react';
 
 export const CarGrid: React.FC = () => {
-  const { filteredCars, isAdmin, setIsCarModalOpen, setEditingCar } = useCars();
-
-  const handleAddNew = () => {
-    setEditingCar(null);
-    setIsCarModalOpen(true);
-  };
+  const { filteredCars } = useCars();
 
   return (
-    <section id="estoque" className="py-16 bg-slate-100/70 border-y border-slate-200">
+    <section id="estoque" className="pt-4 pb-16 bg-slate-100/70 border-y border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -23,22 +18,12 @@ export const CarGrid: React.FC = () => {
               <span>Estoque Atualizado</span>
             </div>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Seminovos em Destaque no Pátio
+              Nosso Estoque de Seminovos
             </h2>
             <p className="text-slate-600 text-sm mt-1">
               Todos os veículos disponíveis em nossa loja física na Av. Bandeirantes e no Shopcar MS.
             </p>
           </div>
-
-          {isAdmin && (
-            <button
-              onClick={handleAddNew}
-              className="inline-flex items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl shadow-md shadow-red-600/30 transition-all transform hover:-translate-y-0.5"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Cadastrar Novo Carro</span>
-            </button>
-          )}
         </div>
 
         {/* Grid List */}

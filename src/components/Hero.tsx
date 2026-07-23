@@ -13,6 +13,9 @@ export const Hero: React.FC = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 via-50% to-slate-950/25" />
 
+      {/* Fade Out Gradiente no Rodapé da Foto Principal (Transição Suave para a Seção de Promoções/Destaques) */}
+      <div className="absolute inset-x-0 bottom-0 h-32 sm:h-40 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none z-10" />
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
 

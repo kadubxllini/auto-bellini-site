@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCars } from '../../context/CarContext';
 import { authService } from '../../services/authService';
 import { X, LogIn, AlertCircle } from 'lucide-react';
@@ -7,6 +7,12 @@ export const AdminLoginModal: React.FC = () => {
   const { isLoginModalOpen, setIsLoginModalOpen, setIsAdmin, showToast } = useCars();
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (isLoginModalOpen) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [isLoginModalOpen]);
 
   if (!isLoginModalOpen) return null;
 
@@ -17,6 +23,9 @@ export const AdminLoginModal: React.FC = () => {
       setIsLoginModalOpen(false);
       setPassword('');
       setError(false);
+      if (window.location.pathname !== '/' && window.location.pathname !== '') {
+        window.history.pushState(null, '', '/');
+      }
       showToast('Bem-vindo! Modo Administrador ativado.', 'success');
     } else {
       setError(true);

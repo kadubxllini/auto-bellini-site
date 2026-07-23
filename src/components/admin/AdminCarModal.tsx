@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCars } from '../../context/CarContext';
 import type { FuelType, TransmissionType } from '../../types/car';
-import { X, CarFront, Save, Download, Loader2, Sparkles, CheckCircle2, AlertCircle, Trash2, Plus, Image as ImageIcon, Star } from 'lucide-react';
+import { X, CarFront, Save, Download, Loader2, Sparkles, CheckCircle2, AlertCircle, Trash2, Plus, Image as ImageIcon, Star, GripVertical, MoveLeft, MoveRight } from 'lucide-react';
 import { DEFAULT_SHOPCAR_URL } from '../../services/carService';
 import { shopcarScraperService } from '../../services/shopcarScraperService';
 
@@ -15,6 +15,7 @@ export const AdminCarModal: React.FC = () => {
   const [priceText, setPriceText] = useState<string>('');
   const [fuel, setFuel] = useState<FuelType>('Flex');
   const [transmission, setTransmission] = useState<TransmissionType>('Automático');
+  const [bodyType, setBodyType] = useState('SUV');
   const [color, setColor] = useState('');
   const [plateEnd, setPlateEnd] = useState('');
   const [photos, setPhotos] = useState<string[]>([]);
@@ -33,6 +34,35 @@ export const AdminCarModal: React.FC = () => {
     message: ''
   });
 
+  const [draggedPhotoIdx, setDraggedPhotoIdx] = useState<number | null>(null);
+
+  const movePhoto = (fromIdx: number, toIdx: number) => {
+    if (toIdx < 0 || toIdx >= photos.length || fromIdx === toIdx) return;
+    const updated = [...photos];
+    const [moved] = updated.splice(fromIdx, 1);
+    updated.splice(toIdx, 0, moved);
+    setPhotos(updated);
+  };
+
+  const handlePhotoDragStart = (e: React.DragEvent, idx: number) => {
+    setDraggedPhotoIdx(idx);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(idx));
+  };
+
+  const handlePhotoDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handlePhotoDrop = (e: React.DragEvent, dropTargetIdx: number) => {
+    e.preventDefault();
+    if (draggedPhotoIdx !== null && draggedPhotoIdx !== dropTargetIdx) {
+      movePhoto(draggedPhotoIdx, dropTargetIdx);
+    }
+    setDraggedPhotoIdx(null);
+  };
+
   useEffect(() => {
     if (editingCar) {
       setBrand(editingCar.brand);
@@ -42,6 +72,7 @@ export const AdminCarModal: React.FC = () => {
       setPriceText(editingCar.price ? String(editingCar.price) : '');
       setFuel(editingCar.fuel);
       setTransmission(editingCar.transmission);
+      setBodyType(editingCar.bodyType || 'SUV');
       setColor(editingCar.color);
       setPlateEnd(editingCar.plateEnd);
       setPhotos(editingCar.photos && editingCar.photos.length > 0 ? editingCar.photos : []);
@@ -57,6 +88,7 @@ export const AdminCarModal: React.FC = () => {
       setPriceText('');
       setFuel('Flex');
       setTransmission('Automático');
+      setBodyType('SUV');
       setColor('');
       setPlateEnd('');
       setPhotos([]);
@@ -211,6 +243,7 @@ export const AdminCarModal: React.FC = () => {
       price: parsedPrice,
       fuel,
       transmission,
+      bodyType,
       color: color.trim(),
       plateEnd: plateEnd.trim(),
       photos: photosList,
@@ -393,7 +426,7 @@ export const AdminCarModal: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Ano/Modelo
+                Ano
               </label>
               <input
                 type="text"
@@ -418,7 +451,7 @@ export const AdminCarModal: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Combustível
@@ -453,6 +486,24 @@ export const AdminCarModal: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                Carroceria
+              </label>
+              <select
+                value={bodyType}
+                onChange={e => setBodyType(e.target.value)}
+                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="SUV">SUV / Crossover</option>
+                <option value="Sedan">Sedan</option>
+                <option value="Hatch">Hatch</option>
+                <option value="Pickup">Pickup / Caminhonete</option>
+                <option value="Utilitário">Utilitário / Furgão</option>
+                <option value="Esportivo">Esportivo / Coupé</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Cor
               </label>
               <input
@@ -480,7 +531,7 @@ export const AdminCarModal: React.FC = () => {
 
           {/* GALERIA DE FOTOS DO VEÍCULO */}
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-blue-600" />
                 <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider">
@@ -488,8 +539,8 @@ export const AdminCarModal: React.FC = () => {
                 </label>
               </div>
               {photos.length > 0 && (
-                <span className="text-[11px] text-slate-500 font-semibold">
-                  A 1ª foto é a Capa do anúncio
+                <span className="text-[11px] text-slate-600 font-semibold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200">
+                  ✋ Arraste as fotos p/ reordenar | 1ª foto = CAPA
                 </span>
               )}
             </div>
@@ -505,32 +556,68 @@ export const AdminCarModal: React.FC = () => {
               />
             </div>
 
-            {/* Grade de Fotos (Thumbnails) */}
+            {/* Grade de Fotos (Thumbnails Reordenáveis) */}
             {photos.length > 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 pt-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 pt-2">
                 {photos.map((photo, idx) => (
                   <div
                     key={idx}
-                    className={`relative group rounded-xl overflow-hidden border-2 bg-slate-900 aspect-video shadow-sm transition-all ${
+                    draggable
+                    onDragStart={e => handlePhotoDragStart(e, idx)}
+                    onDragOver={handlePhotoDragOver}
+                    onDrop={e => handlePhotoDrop(e, idx)}
+                    onDragEnd={() => setDraggedPhotoIdx(null)}
+                    className={`relative group rounded-xl overflow-hidden border-2 bg-slate-900 aspect-video shadow-sm transition-all cursor-grab active:cursor-grabbing ${
+                      draggedPhotoIdx === idx ? 'opacity-40 scale-95 border-amber-500 ring-2 ring-amber-400' : ''
+                    } ${
                       idx === 0 ? 'border-red-600 ring-2 ring-red-500/20' : 'border-slate-200 hover:border-blue-400'
                     }`}
                   >
-                    <img src={photo} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img src={photo} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover pointer-events-none" />
                     
+                    {/* Drag Handle Overlay */}
+                    <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <GripVertical className="w-6 h-6 text-white drop-shadow-md" />
+                    </div>
+
                     {/* Badge Capa */}
                     {idx === 0 && (
-                      <span className="absolute top-1 left-1 bg-red-600 text-white font-black text-[9px] px-1.5 py-0.5 rounded shadow uppercase tracking-wider">
+                      <span className="absolute top-1 left-1 bg-red-600 text-white font-black text-[9px] px-1.5 py-0.5 rounded shadow uppercase tracking-wider z-10">
                         CAPA
                       </span>
                     )}
+
+                    {/* Controles de Reordenação por Botão (Mover Esquerda / Mover Direita) */}
+                    <div className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-slate-950/80 p-0.5 rounded-lg border border-slate-700 z-10">
+                      {idx > 0 && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); movePhoto(idx, idx - 1); }}
+                          title="Mover para esquerda"
+                          className="p-1 hover:bg-slate-800 text-slate-200 hover:text-white rounded"
+                        >
+                          <MoveLeft className="w-3 h-3" />
+                        </button>
+                      )}
+                      {idx < photos.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); movePhoto(idx, idx + 1); }}
+                          title="Mover para direita"
+                          className="p-1 hover:bg-slate-800 text-slate-200 hover:text-white rounded"
+                        >
+                          <MoveRight className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
 
                     {/* Botão Tornar Capa (se não for a 0) */}
                     {idx > 0 && (
                       <button
                         type="button"
-                        onClick={() => handleSetCoverPhoto(idx)}
+                        onClick={(e) => { e.stopPropagation(); handleSetCoverPhoto(idx); }}
                         title="Tornar Foto Capa"
-                        className="absolute bottom-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 text-white hover:text-amber-400 p-1 rounded-md text-[10px] flex items-center gap-0.5"
+                        className="absolute bottom-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 text-white hover:text-amber-400 p-1 rounded-md text-[10px] flex items-center gap-0.5 z-10"
                       >
                         <Star className="w-3 h-3" />
                       </button>
@@ -539,9 +626,9 @@ export const AdminCarModal: React.FC = () => {
                     {/* Botão Remover Foto */}
                     <button
                       type="button"
-                      onClick={() => handleRemovePhoto(idx)}
+                      onClick={(e) => { e.stopPropagation(); handleRemovePhoto(idx); }}
                       title="Excluir Foto"
-                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 hover:bg-red-700 text-white p-1 rounded-md shadow"
+                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 hover:bg-red-700 text-white p-1 rounded-md shadow z-10"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>

@@ -3,7 +3,9 @@ import { CarProvider, useCars } from './context/CarContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { FilterBar } from './components/FilterBar';
+import { FeaturedCarousel } from './components/FeaturedCarousel';
 import { CarGrid } from './components/CarGrid';
+import { SellCarSection } from './components/SellCarSection';
 import { AboutSection } from './components/AboutSection';
 import { MissionSection } from './components/MissionSection';
 import { ContactSection } from './components/ContactSection';
@@ -78,11 +80,14 @@ function AppContent() {
           <>
             <Hero />
             
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <FeaturedCarousel />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
               <FilterBar />
             </div>
 
             <CarGrid />
+            <SellCarSection />
             <AboutSection />
             <MissionSection />
             <ContactSection />
